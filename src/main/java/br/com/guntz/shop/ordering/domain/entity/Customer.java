@@ -64,6 +64,12 @@ public class Customer {
 
     public void archive() {
         this.setArchived(true);
+        this.setArchivedAt(OffsetDateTime.now());
+        this.setFullName("Anonymous");
+        this.setPhone("00 90000-0000");
+        this.setDocument("000.000.000-00");
+        this.setEmail(UUID.randomUUID() + "@anonymous.com");
+        this.setBirthDate(null);
     }
 
     public void enablePromotionNotifications() {
