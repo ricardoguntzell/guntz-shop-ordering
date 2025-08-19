@@ -1,9 +1,7 @@
 package br.com.guntz.shop.ordering.domain.entity;
 
 import br.com.guntz.shop.ordering.domain.exception.CustomerArchivedException;
-import br.com.guntz.shop.ordering.domain.valueobject.CustomerId;
-import br.com.guntz.shop.ordering.domain.valueobject.FullName;
-import br.com.guntz.shop.ordering.domain.valueobject.LoyaltyPoints;
+import br.com.guntz.shop.ordering.domain.valueobject.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +38,7 @@ class CustomerTest {
                 c -> Assertions.assertThat(c.fullName()).isEqualTo(new FullName("Anonymous", "Anonymous")),
                 c -> Assertions.assertThat(c.email()).isNotEqualTo("guntz@mail.com"),
                 c -> Assertions.assertThat(c.phone()).isEqualTo("00 90000-0000"),
-                c -> Assertions.assertThat(c.document()).isEqualTo("000.000.000-00"),
+                c -> Assertions.assertThat(c.document()).isEqualTo(new Document("806.571.170-72")),
                 c -> Assertions.assertThat(c.birthDate()).isNull()
 
         );
@@ -92,10 +90,10 @@ class CustomerTest {
         return new Customer(
                 new CustomerId(),
                 new FullName("Carlos", "Villagrán"),
-                LocalDate.of(1944, 1, 12),
+                new BirthDate(LocalDate.of(1944, 1, 12)),
                 "kiko@chaves.com",
                 "11 12345-1234",
-                "123.456.789-55",
+                new Document("806.571.170-72"),
                 false,
                 OffsetDateTime.now()
         );

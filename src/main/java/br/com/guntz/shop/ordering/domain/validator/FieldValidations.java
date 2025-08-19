@@ -23,7 +23,5 @@ public class FieldValidations {
         if (!EmailValidator.getInstance().isValid(email)) {
             throw new IllegalArgumentException(errorMessage);
         }
-
-
     }
 }
