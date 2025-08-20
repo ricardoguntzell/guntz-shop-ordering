@@ -36,8 +36,8 @@ class CustomerTest {
 
         Assertions.assertWith(customer,
                 c -> Assertions.assertThat(c.fullName()).isEqualTo(new FullName("Anonymous", "Anonymous")),
-                c -> Assertions.assertThat(c.email()).isNotEqualTo("guntz@mail.com"),
-                c -> Assertions.assertThat(c.phone()).isEqualTo("00 90000-0000"),
+                c -> Assertions.assertThat(c.email().value()).isNotEqualTo("guntz@mail.com"),
+                c -> Assertions.assertThat(c.phone().value()).isEqualTo("00 90000-0000"),
                 c -> Assertions.assertThat(c.document()).isEqualTo(new Document("806.571.170-72")),
                 c -> Assertions.assertThat(c.birthDate()).isNull()
 
@@ -56,7 +56,7 @@ class CustomerTest {
                 .isThrownBy(() -> customer.changeEmail(new Email("anonymous@anonymous.com")));
 
         Assertions.assertThatExceptionOfType(CustomerArchivedException.class)
-                .isThrownBy(() -> customer.changePhone("11 98877-4455"));
+                .isThrownBy(() -> customer.changePhone(new Phone("11 98877-4455")));
 
         Assertions.assertThatExceptionOfType(CustomerArchivedException.class)
                 .isThrownBy(customer::disablePromotionNotifications);
@@ -92,7 +92,7 @@ class CustomerTest {
                 new FullName("Carlos", "Villagrán"),
                 new BirthDate(LocalDate.of(1944, 1, 12)),
                 new Email("kiko@chaves.com"),
-                "11 12345-1234",
+                new Phone("11 12345-1234"),
                 new Document("806.571.170-72"),
                 false,
                 OffsetDateTime.now()

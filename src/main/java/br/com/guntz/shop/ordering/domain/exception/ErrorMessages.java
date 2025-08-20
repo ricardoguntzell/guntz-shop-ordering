@@ -10,6 +10,8 @@ public class ErrorMessages {
 
     public static final String VALIDATION_ERROR_DOCUMENT_IS_BLANK = "Document cannot be blank";
 
+    public static final String VALIDATION_ERROR_PHONE_IS_BLANK = "Phone cannot be blank";
+
     public static final String VALIDATION_ERROR_EMAIL_IS_INVALID = "Email is invalid";
 
     public static final String VALIDATION_ERROR_LOYALTY_POINTS_IS_NEGATIVE = "Loyalty points cannot be negative";

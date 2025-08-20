@@ -1,14 +1,12 @@
 package br.com.guntz.shop.ordering.domain.entity;
 
 import br.com.guntz.shop.ordering.domain.exception.CustomerArchivedException;
-import br.com.guntz.shop.ordering.domain.validator.FieldValidations;
 import br.com.guntz.shop.ordering.domain.valueobject.*;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-import static br.com.guntz.shop.ordering.domain.exception.ErrorMessages.VALIDATION_ERROR_EMAIL_IS_INVALID;
 import static br.com.guntz.shop.ordering.domain.exception.ErrorMessages.VALIDATION_ERROR_FULLNAME_IS_NULL;
 
 public class Customer {
@@ -18,7 +16,7 @@ public class Customer {
     private FullName fullName;
     private BirthDate birthDate;
     private Email email;
-    private String phone;
+    private Phone phone;
     private Document document;
 
     private Boolean promotionNotificationsAllowed;
@@ -30,7 +28,7 @@ public class Customer {
     private LoyaltyPoints loyaltyPoints;
 
     public Customer(CustomerId id, FullName fullName, BirthDate birthDate, Email email,
-                    String phone, Document document, Boolean promotionNotificationsAllowed,
+                    Phone phone, Document document, Boolean promotionNotificationsAllowed,
                     OffsetDateTime registeredAt) {
         this.setId(id);
         this.setFullName(fullName);
@@ -45,7 +43,7 @@ public class Customer {
         this.setLoyaltyPoints(LoyaltyPoints.ZERO);
     }
 
-    public Customer(CustomerId id, FullName fullName, BirthDate birthDate, Email email, String phone,
+    public Customer(CustomerId id, FullName fullName, BirthDate birthDate, Email email, Phone phone,
                     Document document, Boolean promotionNotificationsAllowed, Boolean archived,
                     OffsetDateTime registeredAt, OffsetDateTime archivedAt, LoyaltyPoints loyaltyPoints) {
 
@@ -74,7 +72,7 @@ public class Customer {
         this.setArchived(true);
         this.setArchivedAt(OffsetDateTime.now());
         this.setFullName(new FullName("Anonymous", "Anonymous"));
-        this.setPhone("00 90000-0000");
+        this.setPhone(new Phone("00 90000-0000"));
         this.setDocument(new Document("806.571.170-72"));
         this.setEmail(new Email(UUID.randomUUID() + "@anonymous.com"));
         this.setBirthDate(null);
@@ -104,7 +102,7 @@ public class Customer {
         this.setEmail(email);
     }
 
-    public void changePhone(String phone) {
+    public void changePhone(Phone phone) {
         verifyIfChangeable();
 
         this.setPhone(phone);
@@ -126,7 +124,7 @@ public class Customer {
         return email;
     }
 
-    public String phone() {
+    public Phone phone() {
         return phone;
     }
 
@@ -174,9 +172,7 @@ public class Customer {
         this.email = email;
     }
 
-    private void setPhone(String phone) {
-        Objects.requireNonNull(phone);
-
+    private void setPhone(Phone phone) {
         this.phone = phone;
     }
 
