@@ -15,7 +15,7 @@ class CustomerTest {
         Customer customer = correctCustomerModel();
 
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> customer.changeEmail("invalid"));
+                .isThrownBy(() -> customer.changeEmail(new Email("invalid")));
     }
 
     @Test
@@ -24,7 +24,7 @@ class CustomerTest {
 
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> {
-                    customer.changeEmail("invalid");
+                    customer.changeEmail(new Email("invalid"));
                 });
     }
 
@@ -53,7 +53,7 @@ class CustomerTest {
                 .isThrownBy(customer::archive);
 
         Assertions.assertThatExceptionOfType(CustomerArchivedException.class)
-                .isThrownBy(() -> customer.changeEmail("anonymous@anonymous.com"));
+                .isThrownBy(() -> customer.changeEmail(new Email("anonymous@anonymous.com")));
 
         Assertions.assertThatExceptionOfType(CustomerArchivedException.class)
                 .isThrownBy(() -> customer.changePhone("11 98877-4455"));
@@ -91,7 +91,7 @@ class CustomerTest {
                 new CustomerId(),
                 new FullName("Carlos", "Villagrán"),
                 new BirthDate(LocalDate.of(1944, 1, 12)),
-                "kiko@chaves.com",
+                new Email("kiko@chaves.com"),
                 "11 12345-1234",
                 new Document("806.571.170-72"),
                 false,

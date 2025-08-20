@@ -17,7 +17,7 @@ public class Customer {
 
     private FullName fullName;
     private BirthDate birthDate;
-    private String email;
+    private Email email;
     private String phone;
     private Document document;
 
@@ -29,7 +29,7 @@ public class Customer {
 
     private LoyaltyPoints loyaltyPoints;
 
-    public Customer(CustomerId id, FullName fullName, BirthDate birthDate, String email,
+    public Customer(CustomerId id, FullName fullName, BirthDate birthDate, Email email,
                     String phone, Document document, Boolean promotionNotificationsAllowed,
                     OffsetDateTime registeredAt) {
         this.setId(id);
@@ -45,7 +45,7 @@ public class Customer {
         this.setLoyaltyPoints(LoyaltyPoints.ZERO);
     }
 
-    public Customer(CustomerId id, FullName fullName, BirthDate birthDate, String email, String phone,
+    public Customer(CustomerId id, FullName fullName, BirthDate birthDate, Email email, String phone,
                     Document document, Boolean promotionNotificationsAllowed, Boolean archived,
                     OffsetDateTime registeredAt, OffsetDateTime archivedAt, LoyaltyPoints loyaltyPoints) {
 
@@ -76,7 +76,7 @@ public class Customer {
         this.setFullName(new FullName("Anonymous", "Anonymous"));
         this.setPhone("00 90000-0000");
         this.setDocument(new Document("806.571.170-72"));
-        this.setEmail(UUID.randomUUID() + "@anonymous.com");
+        this.setEmail(new Email(UUID.randomUUID() + "@anonymous.com"));
         this.setBirthDate(null);
     }
 
@@ -98,7 +98,7 @@ public class Customer {
         this.setFullName(fullName);
     }
 
-    public void changeEmail(String email) {
+    public void changeEmail(Email email) {
         verifyIfChangeable();
 
         this.setEmail(email);
@@ -122,7 +122,7 @@ public class Customer {
         return birthDate;
     }
 
-    public String email() {
+    public Email email() {
         return email;
     }
 
@@ -170,9 +170,7 @@ public class Customer {
         this.birthDate = birthDate;
     }
 
-    private void setEmail(String email) {
-        FieldValidations.requiresValidEmail(email, VALIDATION_ERROR_EMAIL_IS_INVALID);
-
+    private void setEmail(Email email) {
         this.email = email;
     }
 

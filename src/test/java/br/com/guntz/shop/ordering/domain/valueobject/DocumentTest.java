@@ -17,7 +17,7 @@ class DocumentTest {
     }
 
     @Test
-    void given_NewDocument_whenAddValidDocument_shouldGenerateException() {
+    void given_NewDocument_whenAddInvalidDocument_shouldGenerateException() {
         Assertions.assertThatExceptionOfType(CustomerDocumentException.class)
                 .isThrownBy(() -> new Document("806.571.170-00"));
 
