@@ -1,17 +1,13 @@
 package br.com.guntz.shop.ordering.domain.valueobject;
 
-import java.util.Objects;
+import br.com.guntz.shop.ordering.domain.validator.FieldValidations;
 
 import static br.com.guntz.shop.ordering.domain.exception.ErrorMessages.VALIDATION_ERROR_PHONE_IS_BLANK;
 
 public record Phone(String value) {
 
     public Phone(String value) {
-        Objects.requireNonNull(value);
-
-        if (value.isBlank()) {
-            throw new IllegalArgumentException(VALIDATION_ERROR_PHONE_IS_BLANK);
-        }
+        FieldValidations.requiredNonBlank(value, VALIDATION_ERROR_PHONE_IS_BLANK);
 
         this.value = value;
     }

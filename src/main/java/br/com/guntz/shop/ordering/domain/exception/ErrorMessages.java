@@ -20,7 +20,12 @@ public class ErrorMessages {
 
     public static final String ERROR_CUSTOMER_ARCHIVED = "Customer has already been filed";
 
-    public static final String ERROR_CUSTOMER_DOCUMENT = "CPF is invalid";
+    public static final String ERROR_CUSTOMER_DOCUMENT_CPF = "CPF is invalid";
 
+    public static final String ERROR_MONEY = "Money is invalid";
+
+    public static final String ERROR_MONEY_QUANTITY_ZERO = "Money cannot be multiplied by zero";
+
+    public static final String ERROR_QUANTITY = "Quantity is invalid";
 
 }

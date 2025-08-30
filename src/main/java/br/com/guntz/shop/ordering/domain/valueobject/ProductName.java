@@ -2,18 +2,16 @@ package br.com.guntz.shop.ordering.domain.valueobject;
 
 import br.com.guntz.shop.ordering.domain.validator.FieldValidations;
 
-public record ZipCode(String value) {
+public record ProductName(String value) {
 
-    public ZipCode {
+    public ProductName(String value) {
         FieldValidations.requiredNonBlank(value);
 
-        if (value.length() != 8) {
-            throw new IllegalArgumentException();
-        }
+        this.value = value;
     }
 
     @Override
     public String toString() {
-        return value;
+        return this.value;
     }
 }

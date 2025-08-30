@@ -2,7 +2,7 @@ package br.com.guntz.shop.ordering.domain.validator;
 
 public class CPFHelper {
 
-    public static Boolean cpfIsValid(String cpf) {
+    public static Boolean isValid(String cpf) {
 
         //Remove mask
         String values = convertToUnmaskedValue(cpf);
