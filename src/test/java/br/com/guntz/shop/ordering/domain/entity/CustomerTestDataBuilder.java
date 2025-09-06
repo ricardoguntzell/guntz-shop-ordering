@@ -1,6 +1,7 @@
 package br.com.guntz.shop.ordering.domain.entity;
 
 import br.com.guntz.shop.ordering.domain.valueobject.*;
+import br.com.guntz.shop.ordering.domain.valueobject.id.CustomerId;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;

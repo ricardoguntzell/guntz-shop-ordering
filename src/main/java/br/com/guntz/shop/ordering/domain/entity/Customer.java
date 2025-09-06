@@ -2,6 +2,7 @@ package br.com.guntz.shop.ordering.domain.entity;
 
 import br.com.guntz.shop.ordering.domain.exception.CustomerArchivedException;
 import br.com.guntz.shop.ordering.domain.valueobject.*;
+import br.com.guntz.shop.ordering.domain.valueobject.id.CustomerId;
 import lombok.Builder;
 
 import java.time.OffsetDateTime;

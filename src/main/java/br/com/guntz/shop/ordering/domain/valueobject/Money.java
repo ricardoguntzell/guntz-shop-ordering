@@ -11,16 +11,16 @@ public record Money(BigDecimal value) implements Comparable<Money> {
 
     public static final RoundingMode ROUNDING_MODE_DEFAULT = RoundingMode.HALF_EVEN;
     public static final Money ZERO = new Money(BigDecimal.ZERO);
-    private static final int SCALE_DAFAULT = 2;
+    private static final int SCALE_DEFAULT = 2;
 
     public Money(String value) {
         this(new BigDecimal(value));
     }
 
     public Money(BigDecimal value) {
-        isCorrectMoney(value);
+        validate(value);
 
-        this.value = value.setScale(SCALE_DAFAULT, ROUNDING_MODE_DEFAULT);
+        this.value = value.setScale(SCALE_DEFAULT, ROUNDING_MODE_DEFAULT);
     }
 
     public Money multiply(Quantity quantity) {
@@ -39,7 +39,7 @@ public record Money(BigDecimal value) implements Comparable<Money> {
         return new Money(value.divide(other.value, ROUNDING_MODE_DEFAULT));
     }
 
-    private void isCorrectMoney(BigDecimal value) {
+    private void validate(BigDecimal value) {
         Objects.requireNonNull(value, () -> {
             throw new IllegalArgumentException(ERROR_MONEY);
         });

@@ -28,4 +28,6 @@ public class ErrorMessages {
 
     public static final String ERROR_QUANTITY = "Quantity is invalid";
 
+    public static final String ERROR_ORDER_STATUS_CANNOT_BE_CHANGED = "Cannot change order %s status from %s to %s";
+
 }
