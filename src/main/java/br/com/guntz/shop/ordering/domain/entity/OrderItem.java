@@ -1,6 +1,7 @@
 package br.com.guntz.shop.ordering.domain.entity;
 
 import br.com.guntz.shop.ordering.domain.valueobject.Money;
+import br.com.guntz.shop.ordering.domain.valueobject.Product;
 import br.com.guntz.shop.ordering.domain.valueobject.ProductName;
 import br.com.guntz.shop.ordering.domain.valueobject.Quantity;
 import br.com.guntz.shop.ordering.domain.valueobject.id.OrderId;
@@ -34,16 +35,18 @@ public class OrderItem {
         this.setTotalAmount(totalAmount);
     }
 
-    @Builder(builderClassName = "BrandNewOrderNewBuilder", builderMethodName = "brandNew")
-    private static OrderItem createBrandNew(OrderId orderId, ProductId productId, ProductName productName,
-                                            Money price, Quantity quantity) {
+    @Builder(builderClassName = "BrandNewOrderItemBuilder", builderMethodName = "brandNew")
+    private static OrderItem createBrandNew(OrderId orderId, Product product, Quantity quantity) {
+        Objects.requireNonNull(orderId);
+        Objects.requireNonNull(product);
+        Objects.requireNonNull(quantity);
 
         OrderItem orderItem = new OrderItem(
                 new OrderItemId(),
                 orderId,
-                productId,
-                productName,
-                price,
+                product.productId(),
+                product.productName(),
+                product.price(),
                 quantity,
                 Money.ZERO
         );
@@ -51,6 +54,12 @@ public class OrderItem {
         orderItem.recalculateTotals();
 
         return orderItem;
+    }
+
+    void changeQuantity(Quantity quantity) {
+        Objects.requireNonNull(quantity);
+        this.setQuantity(quantity);
+        this.recalculateTotals();
     }
 
     public OrderItemId id() {
