@@ -2,7 +2,6 @@ package br.com.guntz.shop.ordering.domain.entity;
 
 import br.com.guntz.shop.ordering.domain.valueobject.*;
 import br.com.guntz.shop.ordering.domain.valueobject.id.CustomerId;
-import br.com.guntz.shop.ordering.domain.valueobject.id.ProductId;
 
 import java.time.LocalDate;
 
@@ -12,19 +11,15 @@ public class OrderTestDataBuilder {
 
     private PaymentMethod paymentMethod = PaymentMethod.GATEWAY_BALANCE;
 
-    private Money shippingCost = new Money("10.00");
-    private LocalDate expectedDeliveryDate = LocalDate.now().plusWeeks(1);
+    private Shipping shipping = aShipping();
 
-    private ShippingInfo shippingInfo = aShippingInfo();
-
-    private BillingInfo billingInfo = aBillingInfo();
+    private Billing billing = aBilling();
 
     private boolean withItems = true;
 
     private OrderStatus status = OrderStatus.DRAFT;
 
     private OrderTestDataBuilder() {
-
     }
 
     public static OrderTestDataBuilder anOrder() {
@@ -33,8 +28,8 @@ public class OrderTestDataBuilder {
 
     public Order build() {
         Order order = Order.draft(customerId);
-        order.changeShipping(shippingInfo, shippingCost, expectedDeliveryDate);
-        order.changeBilling(billingInfo);
+        order.changeShipping(shipping);
+        order.changeBilling(billing);
         order.changePaymentMethod(paymentMethod);
 
         if (withItems) {
@@ -50,7 +45,8 @@ public class OrderTestDataBuilder {
         }
 
         switch (this.status) {
-            case DRAFT -> {}
+            case DRAFT -> {
+            }
 
             case PLACED -> {
                 order.place();
@@ -61,28 +57,50 @@ public class OrderTestDataBuilder {
                 order.markAsPaid();
             }
 
-            case READY -> {}
+            case READY -> {
+            }
 
-            case CANCELED -> {}
+            case CANCELED -> {
+            }
         }
 
         return order;
     }
 
-    public static ShippingInfo aShippingInfo() {
-        return ShippingInfo.builder()
+    public static Shipping aShipping() {
+        return Shipping.builder()
+                .cost(new Money("10.00"))
                 .address(anAddress())
-                .document(new Document("806.571.170-72"))
-                .phone(new Phone("11 12345-8888"))
-                .fullName(new FullName("Anonymous", "Anonymous"))
+                .expectedDate(LocalDate.now().plusWeeks(1))
+                .recipient(
+                        Recipient.builder()
+                                .document(new Document("806.571.170-72"))
+                                .phone(new Phone("11 12345-8888"))
+                                .fullName(new FullName("Anonymous", "Anonymous"))
+                                .build())
                 .build();
     }
 
-    public static BillingInfo aBillingInfo() {
-        return BillingInfo.builder()
+    public static Shipping aShippingAlt() {
+        return Shipping.builder()
+                .cost(new Money("20.00"))
+                .expectedDate(LocalDate.now().plusWeeks(2))
+                .address(anAddressAlt())
+                .recipient(
+                        Recipient.builder()
+                                .document(new Document("560.698.230-79"))
+                                .phone(new Phone("11 12345-9797"))
+                                .fullName(new FullName("Carlos", "Vilagran"))
+                                .build())
+                .build();
+    }
+
+    public static Billing aBilling() {
+        return Billing.builder()
                 .address(anAddress())
                 .document(new Document("806.571.170-72"))
                 .phone(new Phone("11 12345-8888"))
+                .email(new Email("anonymous.admin@shop.com.br"))
                 .fullName(new FullName("Anonymous", "Anonymous"))
                 .build();
     }
@@ -99,6 +117,18 @@ public class OrderTestDataBuilder {
                 .build();
     }
 
+    public static Address anAddressAlt() {
+        return Address.builder()
+                .street("Rua do Psy")
+                .number("100")
+                .neighborhood("Vila Mariana")
+                .city("São Paulo")
+                .state("São Paulo")
+                .zipCode(new ZipCode("04105002"))
+                .complement("AP 99")
+                .build();
+    }
+
     public OrderTestDataBuilder customerId(CustomerId customerId) {
         this.customerId = customerId;
         return this;
@@ -109,23 +139,13 @@ public class OrderTestDataBuilder {
         return this;
     }
 
-    public OrderTestDataBuilder shippingCost(Money shippingCost) {
-        this.shippingCost = shippingCost;
+    public OrderTestDataBuilder shipping(Shipping shipping) {
+        this.shipping = shipping;
         return this;
     }
 
-    public OrderTestDataBuilder expectedDeliveryDate(LocalDate expectedDeliveryDate) {
-        this.expectedDeliveryDate = expectedDeliveryDate;
-        return this;
-    }
-
-    public OrderTestDataBuilder shippingInfo(ShippingInfo shippingInfo) {
-        this.shippingInfo = shippingInfo;
-        return this;
-    }
-
-    public OrderTestDataBuilder billingInfo(BillingInfo billingInfo) {
-        this.billingInfo = billingInfo;
+    public OrderTestDataBuilder billing(Billing billing) {
+        this.billing = billing;
         return this;
     }
 

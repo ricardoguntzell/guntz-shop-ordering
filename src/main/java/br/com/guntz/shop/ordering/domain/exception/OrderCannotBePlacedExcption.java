@@ -31,18 +31,4 @@ public class OrderCannotBePlacedExcption extends DomainException {
                 String.format(ErrorMessages.ERROR_ORDER_CANNOT_BE_PLACED_HAS_NO_PAYMENT_METHOD, orderId)
         );
     }
-
-    public static OrderCannotBePlacedExcption invalidShippingCost(OrderId orderId) {
-        return new OrderCannotBePlacedExcption(
-                String.format(ErrorMessages.ERROR_ORDER_CANNOT_BE_PLACED_HAS_INVALID_SHIPPING_COST, orderId)
-        );
-    }
-
-    public static OrderCannotBePlacedExcption invalidExpectedDeliveryDate(OrderId orderId) {
-        return new OrderCannotBePlacedExcption(
-                String.format(ErrorMessages.ERROR_ORDER_CANNOT_BE_PLACED_HAS_INVALID_DELIVERY_DATE, orderId)
-        );
-    }
-
-
 }

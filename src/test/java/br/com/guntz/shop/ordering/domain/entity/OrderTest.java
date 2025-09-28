@@ -1,6 +1,7 @@
 package br.com.guntz.shop.ordering.domain.entity;
 
 
+import br.com.guntz.shop.ordering.domain.exception.OrderCannotBeEditedException;
 import br.com.guntz.shop.ordering.domain.exception.OrderInvalidShippingDeliveryDateException;
 import br.com.guntz.shop.ordering.domain.exception.OrderStatusCannotBeChangedException;
 import br.com.guntz.shop.ordering.domain.exception.ProductOutOfStockException;
@@ -17,8 +18,26 @@ import java.util.Set;
 class OrderTest {
 
     @Test
-    public void shouldGenerate() {
-        Order.draft(new CustomerId());
+    public void shouldGenerateDraftOrder() {
+        CustomerId customerId = new CustomerId();
+        Order order = Order.draft(customerId);
+
+        Assertions.assertWith(order,
+                o -> Assertions.assertThat(o.id()).isNotNull(),
+                o -> Assertions.assertThat(o.customerId()).isEqualTo(customerId),
+                o -> Assertions.assertThat(o.totalAmount()).isEqualTo(Money.ZERO),
+                o -> Assertions.assertThat(o.totalItems()).isEqualTo(Quantity.ZERO),
+                o -> Assertions.assertThat(o.isDraft()).isTrue(),
+                o -> Assertions.assertThat(o.items()).isEmpty(),
+
+                o -> Assertions.assertThat(o.placedAt()).isNull(),
+                o -> Assertions.assertThat(o.paidAt()).isNull(),
+                o -> Assertions.assertThat(o.canceledAt()).isNull(),
+                o -> Assertions.assertThat(o.readyAt()).isNull(),
+                o -> Assertions.assertThat(o.billing()).isNull(),
+                o -> Assertions.assertThat(o.shipping()).isNull(),
+                o -> Assertions.assertThat(o.paymentMethod()).isNull()
+        );
     }
 
     @Test
@@ -112,87 +131,39 @@ class OrderTest {
     }
 
     @Test
-    public void givenDraftOrder_whenChangeBillingInfo_shouldAllowChange() {
-        Address address = Address.builder()
-                .street("Anonymous street")
-                .number("000")
-                .neighborhood("Anonymous neighborhood")
-                .city("Anonymous city")
-                .state("Anonymous state")
-                .zipCode(new ZipCode("12345000"))
-                .complement("Anonymous complement")
-                .build();
-
-        BillingInfo billingInfo = BillingInfo.builder()
-                .address(address)
-                .document(new Document("806.571.170-72"))
-                .phone(new Phone("11 12345-8888"))
-                .fullName(new FullName("Anonymous", "Anonymous"))
-                .build();
+    public void givenDraftOrder_whenChangeBilling_shouldAllowChange() {
+        Billing billing = OrderTestDataBuilder.aBilling();
 
         Order order = Order.draft(new CustomerId());
-        order.changeBilling(billingInfo);
+        order.changeBilling(billing);
 
-        Assertions.assertThat(order.billing()).isEqualTo(billingInfo);
+        Assertions.assertThat(order.billing()).isEqualTo(billing);
     }
 
     @Test
-    public void givenDraftOrder_whenChangeShippingInfo_shouldAllowChange() {
-        Address address = Address.builder()
-                .street("Anonymous street")
-                .number("000")
-                .neighborhood("Anonymous neighborhood")
-                .city("Anonymous city")
-                .state("Anonymous state")
-                .zipCode(new ZipCode("12345000"))
-                .complement("Anonymous complement")
-                .build();
-
-        ShippingInfo shippingInfo = ShippingInfo.builder()
-                .address(address)
-                .document(new Document("806.571.170-72"))
-                .phone(new Phone("11 12345-8888"))
-                .fullName(new FullName("Anonymous", "Anonymous"))
-                .build();
-
+    public void givenDraftOrder_whenChangeShipping_shouldAllowChange() {
+        Shipping shipping = OrderTestDataBuilder.aShipping();
         Order order = Order.draft(new CustomerId());
-        Money shippingCost = Money.ZERO;
-        LocalDate expectedDeliveryDate = LocalDate.now().plusDays(1);
 
-        order.changeShipping(shippingInfo, shippingCost, expectedDeliveryDate);
+        order.changeShipping(shipping);
 
         Assertions.assertWith(order,
-                orderSecond -> Assertions.assertThat(orderSecond.shipping()).isEqualTo(shippingInfo),
-                orderSecond -> Assertions.assertThat(orderSecond.shippingCost()).isEqualTo(shippingCost),
-                orderSecond -> Assertions.assertThat(orderSecond.expectedDeliveryDate()).isEqualTo(expectedDeliveryDate)
+                orderSecond -> Assertions.assertThat(orderSecond.shipping()).isEqualTo(shipping)
         );
     }
 
     @Test
     public void givenDraftOrderAndExpectedDeliveryDateInThePast_whenChangeShippingInfo_shouldNotAllowChange() {
-        Address address = Address.builder()
-                .street("Anonymous street")
-                .number("000")
-                .neighborhood("Anonymous neighborhood")
-                .city("Anonymous city")
-                .state("Anonymous state")
-                .zipCode(new ZipCode("12345000"))
-                .complement("Anonymous complement")
-                .build();
+        LocalDate expectedDeliveryDate = LocalDate.now().minusDays(2);
 
-        ShippingInfo shippingInfo = ShippingInfo.builder()
-                .address(address)
-                .document(new Document("806.571.170-72"))
-                .phone(new Phone("11 12345-8888"))
-                .fullName(new FullName("Anonymous", "Anonymous"))
+        Shipping shipping = OrderTestDataBuilder.aShipping().toBuilder()
+                .expectedDate(expectedDeliveryDate)
                 .build();
 
         Order order = Order.draft(new CustomerId());
-        Money shippingCost = Money.ZERO;
-        LocalDate expectedDeliveryDate = LocalDate.now().minusDays(2);
 
         Assertions.assertThatExceptionOfType(OrderInvalidShippingDeliveryDateException.class)
-                .isThrownBy(() -> order.changeShipping(shippingInfo, shippingCost, expectedDeliveryDate));
+                .isThrownBy(() -> order.changeShipping(shipping));
     }
 
     @Test
