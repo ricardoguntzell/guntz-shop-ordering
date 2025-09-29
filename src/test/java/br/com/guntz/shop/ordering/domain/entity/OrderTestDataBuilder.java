@@ -26,10 +26,6 @@ public class OrderTestDataBuilder {
         return new OrderTestDataBuilder();
     }
 
-    public Order build(Boolean allItems) {
-        return this.build(allItems);
-    }
-
     public Order build() {
         Order order = Order.draft(customerId);
         order.changeShipping(shipping);
