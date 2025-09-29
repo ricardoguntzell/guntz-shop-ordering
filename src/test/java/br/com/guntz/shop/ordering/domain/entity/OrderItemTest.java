@@ -11,7 +11,6 @@ class OrderItemTest {
 
     @Test
     public void shouldGenerateBrandNewOrderItem() {
-
         Product product = ProductTestDataBuilder.aProduct().build();
         Quantity quantity = new Quantity(1);
         OrderId orderId = new OrderId();
@@ -23,15 +22,14 @@ class OrderItemTest {
                 .build();
 
         Assertions.assertWith(orderItem,
-                o -> Assertions.assertThat(o.id()).isNotNull(),
+                o -> Assertions.assertThat(o.orderItemId()).isNotNull(),
                 o -> Assertions.assertThat(o.productId()).isEqualTo(product.productId()),
                 o -> Assertions.assertThat(o.orderId()).isEqualTo(orderId),
                 o -> Assertions.assertThat(o.productName()).isEqualTo(product.productName()),
                 o -> Assertions.assertThat(o.price()).isEqualTo(product.price()),
                 o -> Assertions.assertThat(o.quantity()).isEqualTo(quantity)
-                );
-
-
+        );
     }
+
 
 }

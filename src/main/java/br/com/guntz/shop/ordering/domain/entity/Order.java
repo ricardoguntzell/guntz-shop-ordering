@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Getter
 public class Order {
 
     private OrderId id;
@@ -85,7 +84,7 @@ public class Order {
         product.checkOutOfStock();
 
         OrderItem orderItem = OrderItem.brandNew()
-                .orderId(this.id)
+                .orderId(this.id())
                 .product(product)
                 .quantity(quantity)
                 .build();
@@ -151,6 +150,16 @@ public class Order {
         this.recalculateTotals();
     }
 
+    public void removeItem(OrderItemId orderItemId) {
+        Objects.requireNonNull(orderItemId);
+        verifyIfChangeable();
+
+        OrderItem orderItemForRemove = this.findOrderItem(orderItemId);
+
+        this.items.remove(orderItemForRemove);
+        this.recalculateTotals();
+    }
+
     public boolean isDraft() {
         return OrderStatus.DRAFT.equals(this.status());
     }
@@ -213,16 +222,14 @@ public class Order {
     }
 
     private void recalculateTotals() {
-        BigDecimal totalItemsAmount = this.items().stream()
-                .map(orderItem -> orderItem.totalAmount().value())
+        BigDecimal totalItemsAmount = this.items().stream().map(i -> i.totalAmount().value())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        Integer totalItemsQuantity = this.items().stream()
-                .map(orderItem -> orderItem.quantity().value())
+        Integer totalItemsQuantity = this.items().stream().map(i -> i.quantity().value())
                 .reduce(0, Integer::sum);
 
         BigDecimal shippingCost;
-        if (this.shipping() == null) {
+        if(this.shipping() == null) {
             shippingCost = BigDecimal.ZERO;
         } else {
             shippingCost = this.shipping().cost().value();
@@ -270,13 +277,13 @@ public class Order {
         Objects.requireNonNull(orderItemId);
 
         return this.items().stream()
-                .filter(orderItem -> orderItem.id().equals(orderItemId))
+                .filter(orderItem -> orderItem.orderItemId().equals(orderItemId))
                 .findFirst()
                 .orElseThrow(() -> new OrderDoesNotContainOrderItemException(this.id(), orderItemId));
     }
 
-    private void verifyIfChangeable(){
-        if (!isDraft()){
+    private void verifyIfChangeable() {
+        if (!isDraft()) {
             throw new OrderCannotBeEditedException(this.id(), OrderStatus.DRAFT);
         }
     }

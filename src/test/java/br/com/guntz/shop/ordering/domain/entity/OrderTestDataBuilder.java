@@ -26,6 +26,10 @@ public class OrderTestDataBuilder {
         return new OrderTestDataBuilder();
     }
 
+    public Order build(Boolean allItems) {
+        return this.build(allItems);
+    }
+
     public Order build() {
         Order order = Order.draft(customerId);
         order.changeShipping(shipping);
@@ -69,7 +73,7 @@ public class OrderTestDataBuilder {
 
     public static Shipping aShipping() {
         return Shipping.builder()
-                .cost(new Money("10.00"))
+                .cost(new Money("0"))
                 .address(anAddress())
                 .expectedDate(LocalDate.now().plusWeeks(1))
                 .recipient(

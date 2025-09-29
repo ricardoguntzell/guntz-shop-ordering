@@ -1,7 +1,6 @@
 package br.com.guntz.shop.ordering.domain.entity;
 
 
-import br.com.guntz.shop.ordering.domain.exception.OrderCannotBeEditedException;
 import br.com.guntz.shop.ordering.domain.exception.OrderInvalidShippingDeliveryDateException;
 import br.com.guntz.shop.ordering.domain.exception.OrderStatusCannotBeChangedException;
 import br.com.guntz.shop.ordering.domain.exception.ProductOutOfStockException;
@@ -56,7 +55,7 @@ class OrderTest {
         OrderItem orderItem = order.items().iterator().next();
 
         Assertions.assertWith(orderItem,
-                (i) -> Assertions.assertThat(i.id()).isNotNull(),
+                (i) -> Assertions.assertThat(i.orderId()).isNotNull(),
                 (i) -> Assertions.assertThat(i.productName()).isEqualTo(new ProductName("PS5")),
                 (i) -> Assertions.assertThat(i.productId()).isEqualTo(productId),
                 (i) -> Assertions.assertThat(i.price()).isEqualTo(new Money("4000")),
@@ -177,7 +176,7 @@ class OrderTest {
 
         OrderItem orderItem = order.items().iterator().next();
 
-        order.changeItemQuantity(orderItem.id(), new Quantity(5));
+        order.changeItemQuantity(orderItem.orderItemId(), new Quantity(5));
 
         Assertions.assertWith(order,
                 o -> Assertions.assertThat(o.totalAmount()).isEqualTo(new Money("400")),

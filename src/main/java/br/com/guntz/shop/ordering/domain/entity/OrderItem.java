@@ -13,7 +13,7 @@ import java.util.Objects;
 
 public class OrderItem {
 
-    private OrderItemId id;
+    private OrderItemId orderItemId;
     private OrderId orderId;
 
     private ProductId productId;
@@ -25,8 +25,8 @@ public class OrderItem {
     private Money totalAmount;
 
     @Builder(builderClassName = "ExistingOrderItemBuilder", builderMethodName = "existing")
-    public OrderItem(OrderItemId id, OrderId orderId, ProductId productId, ProductName productName, Money price, Quantity quantity, Money totalAmount) {
-        this.setId(id);
+    public OrderItem(OrderItemId orderItemId, OrderId orderId, ProductId productId, ProductName productName, Money price, Quantity quantity, Money totalAmount) {
+        this.setOrderItemId(orderItemId);
         this.setOrderId(orderId);
         this.setProductId(productId);
         this.setProductName(productName);
@@ -62,8 +62,8 @@ public class OrderItem {
         this.recalculateTotals();
     }
 
-    public OrderItemId id() {
-        return id;
+    public OrderItemId orderItemId() {
+        return orderItemId;
     }
 
     public OrderId orderId() {
@@ -94,8 +94,8 @@ public class OrderItem {
         this.setTotalAmount(this.price().multiply(this.quantity()));
     }
 
-    private void setId(OrderItemId id) {
-        this.id = Objects.requireNonNull(id);
+    private void setOrderItemId(OrderItemId id) {
+        this.orderItemId = Objects.requireNonNull(id);
     }
 
     private void setOrderId(OrderId orderId) {
@@ -126,11 +126,24 @@ public class OrderItem {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         OrderItem orderItem = (OrderItem) o;
-        return Objects.equals(id, orderItem.id);
+        return Objects.equals(orderItemId, orderItem.orderItemId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hashCode(orderItemId);
+    }
+
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+               "orderItemId=" + orderItemId +
+               ", orderId=" + orderId +
+               ", productId=" + productId +
+               ", productName=" + productName +
+               ", price=" + price +
+               ", quantity=" + quantity +
+               ", totalAmount=" + totalAmount +
+               '}';
     }
 }

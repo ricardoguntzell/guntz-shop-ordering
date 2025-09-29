@@ -14,7 +14,7 @@ public class ProductTestDataBuilder {
         return Product.builder()
                 .productId(new ProductId())
                 .productName(new ProductName("PS5"))
-                .price(new Money("4000"))
+                .price(new Money("4000.00"))
                 .inStock(true);
     }
 
