@@ -167,6 +167,19 @@ public class Order {
         this.recalculateTotals();
     }
 
+    public void cancel(){
+        if (isCanceled()){
+            throw new OrderStatusCannotBeChangedException(this.id(), this.status(), OrderStatus.CANCELED);
+        }
+
+        if (!this.status.canChangeTo(OrderStatus.CANCELED)){
+            throw new OrderStatusCannotBeChangedException(this.id(), this.status(), OrderStatus.CANCELED);
+        }
+
+        this.changeStatus(OrderStatus.CANCELED);
+        this.setCanceledAt(OffsetDateTime.now());
+    }
+
     public boolean isDraft() {
         return OrderStatus.DRAFT.equals(this.status());
     }
@@ -179,6 +192,9 @@ public class Order {
         return OrderStatus.PAID.equals(this.status());
     }
 
+    public boolean isCanceled() {
+        return OrderStatus.CANCELED.equals(this.status());
+    }
 
     public OrderId id() {
         return id;

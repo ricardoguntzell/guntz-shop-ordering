@@ -40,7 +40,9 @@ public class OrderChangingTest {
 
     @Test
     public void givenNotDraftOrder_whenChanged_shouldInvokeException() {
-        Order order = OrderTestDataBuilder.anOrder().status(OrderStatus.PAID).build();
+        Order order = OrderTestDataBuilder.anOrder().build();
+        order.place();
+        order.markAsPaid();
         Product product = ProductTestDataBuilder.aProduct().build();
         Shipping shipping = OrderTestDataBuilder.aShipping();
         Billing billing = OrderTestDataBuilder.aBilling();
