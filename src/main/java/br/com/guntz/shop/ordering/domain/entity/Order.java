@@ -6,7 +6,6 @@ import br.com.guntz.shop.ordering.domain.valueobject.id.CustomerId;
 import br.com.guntz.shop.ordering.domain.valueobject.id.OrderId;
 import br.com.guntz.shop.ordering.domain.valueobject.id.OrderItemId;
 import lombok.Builder;
-import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -105,10 +104,18 @@ public class Order {
         this.changeStatus(OrderStatus.PLACED);
     }
 
-
     public void markAsPaid() {
         this.setPaidAt(OffsetDateTime.now());
         this.changeStatus(OrderStatus.PAID);
+    }
+
+    public void markAsReady() {
+        if (!isPaid()) {
+            throw new OrderStatusCannotBeChangedException(this.id(), this.status(), OrderStatus.READY);
+        }
+
+        this.changeStatus(OrderStatus.READY);
+        this.setReadyAt(OffsetDateTime.now());
     }
 
     public void changePaymentMethod(PaymentMethod paymentMethod) {
@@ -229,7 +236,7 @@ public class Order {
                 .reduce(0, Integer::sum);
 
         BigDecimal shippingCost;
-        if(this.shipping() == null) {
+        if (this.shipping() == null) {
             shippingCost = BigDecimal.ZERO;
         } else {
             shippingCost = this.shipping().cost().value();
@@ -257,19 +264,19 @@ public class Order {
 
     private void verifyCanChangeToPlaced() {
         if (this.items() == null || this.items().isEmpty()) {
-            throw OrderCannotBePlacedExcption.noItems(this.id());
+            throw OrderCannotBePlacedException.noItems(this.id());
         }
 
         if (this.shipping() == null) {
-            throw OrderCannotBePlacedExcption.noShippingInfo(this.id());
+            throw OrderCannotBePlacedException.noShippingInfo(this.id());
         }
 
         if (this.billing() == null) {
-            throw OrderCannotBePlacedExcption.noBillingInfo(this.id());
+            throw OrderCannotBePlacedException.noBillingInfo(this.id());
         }
 
         if (this.paymentMethod() == null) {
-            throw OrderCannotBePlacedExcption.noPaymentMethod(this.id());
+            throw OrderCannotBePlacedException.noPaymentMethod(this.id());
         }
     }
 

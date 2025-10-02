@@ -22,7 +22,7 @@ public enum OrderStatus {
         return newStatus.previousStatuses.contains(currentStatus);
     }
 
-    public boolean canNotChangeTo(OrderStatus newStatus){
+    public boolean canNotChangeTo(OrderStatus newStatus) {
         return !canChangeTo(newStatus);
     }
 }
