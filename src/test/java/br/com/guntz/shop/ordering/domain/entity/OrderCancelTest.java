@@ -49,6 +49,7 @@ public class OrderCancelTest {
         Order order = OrderTestDataBuilder.anOrder().build();
         order.place();
         order.markAsPaid();
+        order.markAsReady();
 
         Assertions.assertWith(order,
                 o -> Assertions.assertThatNoException().isThrownBy(order::cancel),

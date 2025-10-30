@@ -110,10 +110,6 @@ public class Order {
     }
 
     public void markAsReady() {
-        if (!isPaid()) {
-            throw new OrderStatusCannotBeChangedException(this.id(), this.status(), OrderStatus.READY);
-        }
-
         this.changeStatus(OrderStatus.READY);
         this.setReadyAt(OffsetDateTime.now());
     }
@@ -167,15 +163,7 @@ public class Order {
         this.recalculateTotals();
     }
 
-    public void cancel(){
-        if (isCanceled()){
-            throw new OrderStatusCannotBeChangedException(this.id(), this.status(), OrderStatus.CANCELED);
-        }
-
-        if (!this.status.canChangeTo(OrderStatus.CANCELED)){
-            throw new OrderStatusCannotBeChangedException(this.id(), this.status(), OrderStatus.CANCELED);
-        }
-
+    public void cancel() {
         this.changeStatus(OrderStatus.CANCELED);
         this.setCanceledAt(OffsetDateTime.now());
     }
