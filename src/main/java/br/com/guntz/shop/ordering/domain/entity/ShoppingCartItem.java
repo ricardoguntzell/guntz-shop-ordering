@@ -1,5 +1,6 @@
 package br.com.guntz.shop.ordering.domain.entity;
 
+import br.com.guntz.shop.ordering.domain.exception.ShoppingCartItemIncompatibleProductException;
 import br.com.guntz.shop.ordering.domain.valueobject.Money;
 import br.com.guntz.shop.ordering.domain.valueobject.Product;
 import br.com.guntz.shop.ordering.domain.valueobject.ProductName;
@@ -10,6 +11,8 @@ import br.com.guntz.shop.ordering.domain.valueobject.id.ShoppingCartItemId;
 import lombok.Builder;
 
 import java.util.Objects;
+
+import static br.com.guntz.shop.ordering.domain.exception.ErrorMessages.ERROR_QUANTITY;
 
 public class ShoppingCartItem {
 
@@ -37,8 +40,8 @@ public class ShoppingCartItem {
         this.setAvailable(available);
     }
 
-    @Builder(builderClassName = "BrandNewShoppingCartItemBuilder", builderMethodName = "brandNew")
-    public ShoppingCartItem createBrandNew(ShoppingCartId shoppingCartId, ProductId productId,
+    @Builder(builderClassName = "BrandNewShoppingCartItem", builderMethodName = "brandNew")
+    private static ShoppingCartItem createBrandNew(ShoppingCartId shoppingCartId, ProductId productId,
                                            ProductName productName, Money price, Quantity quantity) {
         Objects.requireNonNull(shoppingCartId);
         Objects.requireNonNull(productId);
@@ -46,19 +49,50 @@ public class ShoppingCartItem {
         Objects.requireNonNull(price);
         Objects.requireNonNull(quantity);
 
-        this.recalculateTotals();
-        this.setAvailable(Boolean.TRUE);
-
-        return new ShoppingCartItem(
+        ShoppingCartItem shoppingCartItem = new ShoppingCartItem(
                 new ShoppingCartItemId(),
                 shoppingCartId,
                 productId,
                 productName,
                 price,
                 quantity,
-                this.totalAmount(),
-                this.isAvailable()
+                Money.ZERO,
+                Boolean.TRUE
         );
+
+        shoppingCartItem.recalculateTotals();
+
+        return shoppingCartItem;
+    }
+
+    void refresh(Product product) {
+        Objects.requireNonNull(product);
+        Objects.requireNonNull(product.productId());
+
+        if (!product.productId().equals(this.productId)) {
+            throw new ShoppingCartItemIncompatibleProductException(this.id(), this.productId());
+        }
+
+        this.setProductName(product.productName());
+        this.setPrice(product.price());
+        this.setAvailable(product.inStock());
+
+        this.recalculateTotals();
+    }
+
+    void changeQuantity(Quantity quantity) {
+        Objects.requireNonNull(quantity);
+
+        if (quantity.value() <= 0) {
+            throw new IllegalArgumentException(ERROR_QUANTITY);
+        }
+
+        this.setQuantity(quantity);
+        this.recalculateTotals();
+    }
+
+    public void recalculateTotals() {
+        this.setTotalAmount(this.price().multiply(this.quantity()));
     }
 
     public ShoppingCartItemId id() {
@@ -93,10 +127,6 @@ public class ShoppingCartItem {
         return available;
     }
 
-    private void recalculateTotals() {
-        this.setTotalAmount(this.price().multiply(this.quantity()));
-    }
-
     private void setId(ShoppingCartItemId id) {
         this.id = Objects.requireNonNull(id);
     }
@@ -128,6 +158,7 @@ public class ShoppingCartItem {
     private void setAvailable(Boolean available) {
         this.available = Objects.requireNonNull(available);
     }
+
 
     @Override
     public boolean equals(Object o) {
