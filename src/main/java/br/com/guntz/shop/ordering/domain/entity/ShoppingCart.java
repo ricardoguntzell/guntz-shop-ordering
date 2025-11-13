@@ -11,7 +11,6 @@ import br.com.guntz.shop.ordering.domain.valueobject.id.ShoppingCartId;
 import br.com.guntz.shop.ordering.domain.valueobject.id.ShoppingCartItemId;
 import lombok.Builder;
 
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.*;
 
@@ -44,7 +43,6 @@ public class ShoppingCart {
         this.items.clear();
         this.setTotalAmount(Money.ZERO);
         this.setTotalItems(Quantity.ZERO);
-        this.recalculateTotals();
     }
 
     public void addItem(Product product, Quantity quantity) {
@@ -98,12 +96,12 @@ public class ShoppingCart {
     }
 
     public void recalculateTotals() {
-        BigDecimal totalItemsAmount = this.items().stream().map(i -> i.totalAmount().value()).reduce(BigDecimal.ZERO, BigDecimal::add);
+        Money totalItemsAmount = this.items().stream().map(ShoppingCartItem::totalAmount).reduce(Money.ZERO, Money::add);
 
-        Integer totalItemsQuantity = this.items().stream().map(i -> i.quantity().value()).reduce(0, Integer::sum);
+        Quantity totalItemsQuantity = this.items().stream().map(ShoppingCartItem::quantity).reduce(Quantity.ZERO, Quantity::add);
 
-        this.setTotalAmount(new Money(totalItemsAmount));
-        this.setTotalItems(new Quantity(totalItemsQuantity));
+        this.setTotalAmount(totalItemsAmount);
+        this.setTotalItems(totalItemsQuantity);
     }
 
     public Boolean isEmpty() {
@@ -112,7 +110,7 @@ public class ShoppingCart {
 
     public Boolean containsUnavailableItems() {
         return this.items.stream()
-                .anyMatch(ShoppingCartItem::isAvailable);
+                .anyMatch(ShoppingCartItem::isUnavailable);
     }
 
     public ShoppingCartId id() {

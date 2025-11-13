@@ -42,7 +42,7 @@ public class ShoppingCartItem {
 
     @Builder(builderClassName = "BrandNewShoppingCartItem", builderMethodName = "brandNew")
     private static ShoppingCartItem createBrandNew(ShoppingCartId shoppingCartId, ProductId productId,
-                                           ProductName productName, Money price, Quantity quantity) {
+                                                   ProductName productName, Money price, Quantity quantity) {
         Objects.requireNonNull(shoppingCartId);
         Objects.requireNonNull(productId);
         Objects.requireNonNull(productName);
@@ -125,6 +125,10 @@ public class ShoppingCartItem {
 
     public Boolean isAvailable() {
         return available;
+    }
+
+    public Boolean isUnavailable() {
+        return !this.isAvailable();
     }
 
     private void setId(ShoppingCartItemId id) {
